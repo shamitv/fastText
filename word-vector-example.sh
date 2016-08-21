@@ -14,11 +14,9 @@ DATADIR=data
 mkdir -p "${RESULTDIR}"
 mkdir -p "${DATADIR}"
 
-if [ ! -f "${DATADIR}/text9" ]
+if [ ! -f "${DATADIR}/wikit_text.txt" ]
 then
-  wget -c http://mattmahoney.net/dc/enwik9.zip -P "${DATADIR}"
-  unzip "${DATADIR}/enwik9.zip" -d "${DATADIR}"
-  perl wikifil.pl "${DATADIR}/enwik9" > "${DATADIR}"/text9
+  cp "/mnt/tmp/wikitext.txt" "${DATADIR}"/text9
 fi
 
 if [ ! -f "${DATADIR}/rw/rw.txt" ]
@@ -31,7 +29,7 @@ make
 
 ./fasttext skipgram -input "${DATADIR}"/text9 -output "${RESULTDIR}"/text9 -lr 0.025 -dim 100 \
   -ws 5 -epoch 1 -minCount 5 -neg 5 -loss ns -bucket 2000000 \
-  -minn 3 -maxn 6 -thread 4 -t 1e-4 -lrUpdateRate 100
+  -minn 3 -maxn 6 -thread 20 -t 1e-4 -lrUpdateRate 100
 
 cut -f 1,2 "${DATADIR}"/rw/rw.txt | awk '{print tolower($0)}' | tr '\t' '\n' > "${DATADIR}"/queries.txt
 
